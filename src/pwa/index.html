@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prompt Polisher PWA</title>
+  <meta name="description" content="Polish your prompts for better AI interactions">
+  <meta name="theme-color" content="#4f46e5">
+  
+  <!-- PWA manifest -->
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16.png">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #3730a3;
+      --secondary: #6b7280;
+      --background: #f9fafb;
+      --surface: #ffffff;
+      --text: #111827;
+      --text-secondary: #6b7280;
+      --border: #e5e7eb;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: #111827;
+        --surface: #1f2937;
+        --text: #f9fafb;
+        --text-secondary: #d1d5db;
+        --border: #374151;
+      }
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 0.875rem;
+    }
+
+    .main {
+      flex: 1;
+      max-width: 768px;
+      margin: 0 auto;
+      padding: 1rem;
+      width: 100%;
+    }
+
+    .container {
+      background: var(--surface);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1rem;
+    }
+
+    .input-section {
+      margin-bottom: 2rem;
+    }
+
+    .label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      resize: vertical;
+      background: var(--surface);
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+
+    .textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.625rem 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      justify-content: center;
+      min-width: 120px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-primary:disabled {
+      background: var(--secondary);
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--background);
+    }
+
+    .results-section {
+      margin-top: 1.5rem;
+      display: none;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .button-group {
+        flex-direction: column;
+      }
+      
+      .btn {
+        flex: none;
+      }
+    }
+
+    .prompt-box {
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      min-height: 100px;
+    }
+
+    .prompt-box h4 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--secondary);
+    }
+
+    .prompt-text {
+      font-size: 0.875rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .improvements-list {
+      margin-top: 1rem;
+    }
+
+    .improvements-list h4 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .improvements-list ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .improvements-list li {
+      padding: 0.25rem 0;
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+    }
+
+    .improvements-list li strong {
+      color: var(--primary);
+      text-transform: capitalize;
+    }
+
+    .language-detector {
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+    }
+
+    .language-flag {
+      font-size: 1rem;
+    }
+
+    .confidence-bar {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .confidence-fill {
+      height: 100%;
+      background: var(--success);
+      transition: width 0.3s;
+    }
+
+    .toast {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: var(--success);
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      box-shadow: var(--shadow-lg);
+      transform: translateX(100%);
+      transition: transform 0.3s;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast.error {
+      background: var(--error);
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-secondary);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-secondary);
+      font-size: 0.8125rem;
+    }
+
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .install-prompt {
+      background: var(--primary);
+      color: white;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .install-prompt button {
+      background: white;
+      color: var(--primary);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+
+    /* Share target styles */
+    .share-content {
+      background: var(--background);
+      border: 1px solid var(--primary);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .share-content h3 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>✨ Prompt Polisher</h1>
+    <p>Transform your prompts into powerful AI instructions</p>
+  </div>
+
+  <main class="main">
+    <!-- Install prompt -->
+    <div id="install-prompt" class="install-prompt">
+      <strong>📱 Install Prompt Polisher</strong>
+      <p>Add this app to your home screen for quick access!</p>
+      <button onclick="installApp()">Install App</button>
+    </div>
+
+    <!-- Share target content -->
+    <div id="share-content" class="share-content" style="display: none;">
+      <h3>📤 Shared Content</h3>
+      <div id="shared-text"></div>
+    </div>
+
+    <div class="container">
+      <!-- Language Detection -->
+      <div id="language-detector" class="language-detector" style="display: none;">
+        <span class="language-flag">🌐</span>
+        <span id="detected-language">Detecting language...</span>
+        <div class="confidence-bar">
+          <div id="confidence-fill" class="confidence-fill"></div>
+        </div>
+      </div>
+
+      <!-- Input Section -->
+      <div class="input-section">
+        <label for="prompt-input" class="label">Enter your prompt:</label>
+        <textarea 
+          id="prompt-input" 
+          class="textarea" 
+          placeholder="Type or paste your prompt here... For example: 'Help me write a blog post about AI'"
+        ></textarea>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="button-group">
+        <button id="improve-btn" class="btn btn-primary">
+          <span>✨</span> Improve Prompt
+        </button>
+        <button id="save-btn" class="btn btn-secondary" disabled>
+          <span>💾</span> Save to Library
+        </button>
+        <button id="copy-btn" class="btn btn-secondary" disabled>
+          <span>📋</span> Copy Result
+        </button>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Polishing your prompt...</p>
+      </div>
+
+      <!-- Results Section -->
+      <div id="results" class="results-section">
+        <div class="comparison-grid">
+          <div class="prompt-box">
+            <h4>Original Prompt</h4>
+            <div id="original-text" class="prompt-text"></div>
+          </div>
+          <div class="prompt-box">
+            <h4>Improved Prompt</h4>
+            <div id="improved-text" class="prompt-text"></div>
+          </div>
+        </div>
+
+        <div class="improvements-list">
+          <h4>💡 Improvements Made</h4>
+          <ul id="improvements-list"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Prompts -->
+    <div class="container">
+      <h3>📚 Recent Prompts</h3>
+      <div id="recent-prompts">
+        <p style="color: var(--text-secondary); text-align: center; padding: 1rem;">
+          No saved prompts yet. Improve some prompts to see them here!
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>
+      Made with ❤️ for better AI interactions • 
+      <a href="https://github.com/prompt-polisher" target="_blank">Open Source</a>
+    </p>
+  </footer>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

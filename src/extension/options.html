@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prompt Polisher - Settings</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f9fafb;
+      color: #111827;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 16px;
+    }
+
+    .settings-grid {
+      display: grid;
+      gap: 24px;
+    }
+
+    .settings-section {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #374151;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .setting-item:last-child {
+      border-bottom: none;
+    }
+
+    .setting-info {
+      flex: 1;
+    }
+
+    .setting-label {
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .setting-description {
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .setting-control {
+      margin-left: 16px;
+    }
+
+    .toggle {
+      position: relative;
+      width: 48px;
+      height: 24px;
+      background: #d1d5db;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .toggle.active {
+      background: #4f46e5;
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+
+    .toggle.active::after {
+      transform: translateX(24px);
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .input-group label {
+      font-weight: 500;
+      color: #374151;
+    }
+
+    .input-group input,
+    .input-group select,
+    .input-group textarea {
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .input-group input:focus,
+    .input-group select:focus,
+    .input-group textarea:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .provider-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: #f9fafb;
+    }
+
+    .provider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .provider-name {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .provider-status {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .provider-status.enabled {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .provider-status.disabled {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .shortcuts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #4f46e5;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #3730a3;
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .success-message {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .error-message {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 12px;
+      }
+      
+      .shortcuts-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      
+      .setting-control {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>⚙️ Settings</h1>
+      <p>Configure Prompt Polisher to work perfectly for you</p>
+    </div>
+
+    <div id="success-message" class="success-message"></div>
+    <div id="error-message" class="error-message"></div>
+
+    <div class="settings-grid">
+      <!-- General Settings -->
+      <div class="settings-section">
+        <h2 class="section-title">
+          <span>🎯</span> General Settings
+        </h2>
+        
+        <div class="setting-item">
+          <div class="setting-info">
+            <div class="setting-label">Auto-detect language</div>
+            <div class="setting-description">Automatically detect the language of prompts and respond in the same language</div>
+          </div>
+          <div class="setting-control">
+            <div class="toggle active" id="toggle-auto-language"></div>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <div class="setting-label">Show persona suggestions</div>
+            <div class="setting-description">Suggest expert personas based on prompt content</div>
+          </div>
+          <div class="setting-control">
+            <div class="toggle active" id="toggle-persona"></div>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <div class="setting-label">Show format suggestions</div>
+            <div class="setting-description">Suggest output formats like lists, tables, or step-by-step guides</div>
+          </div>
+          <div class="setting-control">
+            <div class="toggle active" id="toggle-format"></div>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <div class="setting-label">Include examples</div>
+            <div class="setting-description">Add example requests to improved prompts when helpful</div>
+          </div>
+          <div class="setting-control">
+            <div class="toggle active" id="toggle-examples"></div>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <div class="setting-label">Enable offline fallback</div>
+            <div class="setting-description">Use local rules when AI providers are unavailable</div>
+          </div>
+          <div class="setting-control">
+            <div class="toggle" id="toggle-offline"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Providers -->
+      <div class="settings-section">
+        <h2 class="section-title">
+          <span>🤖</span> AI Providers
+        </h2>
+        
+        <div id="providers-list">
+          <!-- Provider cards will be inserted here -->
+        </div>
+
+        <button class="btn btn-secondary" id="add-provider">+ Add Provider</button>
+      </div>
+
+      <!-- Keyboard Shortcuts -->
+      <div class="settings-section">
+        <h2 class="section-title">
+          <span>⌨️</span> Keyboard Shortcuts
+        </h2>
+        
+        <div class="shortcuts-grid">
+          <div class="input-group">
+            <label for="shortcut-improve">Improve Prompt</label>
+            <input type="text" id="shortcut-improve" value="Ctrl+Shift+I" readonly>
+          </div>
+          <div class="input-group">
+            <label for="shortcut-toggle">Toggle Suggestions</label>
+            <input type="text" id="shortcut-toggle" value="Ctrl+Shift+T" readonly>
+          </div>
+        </div>
+        
+        <p style="margin-top: 12px; font-size: 14px; color: #6b7280;">
+          Shortcuts are configurable in Chrome's Extension settings (chrome://extensions/shortcuts)
+        </p>
+      </div>
+
+      <!-- Data Management -->
+      <div class="settings-section">
+        <h2 class="section-title">
+          <span>💾</span> Data Management
+        </h2>
+        
+        <div class="setting-item">
+          <div class="setting-info">
+            <div class="setting-label">Export library</div>
+            <div class="setting-description">Download all your saved prompts and settings as JSON</div>
+          </div>
+          <div class="setting-control">
+            <button class="btn btn-secondary" id="export-data">Export</button>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <div class="setting-label">Import library</div>
+            <div class="setting-description">Upload and merge prompts from a JSON file</div>
+          </div>
+          <div class="setting-control">
+            <input type="file" id="import-file" accept=".json" style="display: none;">
+            <button class="btn btn-secondary" id="import-data">Import</button>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <div class="setting-label">Clear all data</div>
+            <div class="setting-description">Remove all saved prompts and reset settings (cannot be undone)</div>
+          </div>
+          <div class="setting-control">
+            <button class="btn btn-danger" id="clear-data">Clear All</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-secondary" id="reset-settings">Reset to Defaults</button>
+      <button class="btn btn-primary" id="save-settings">Save Changes</button>
+    </div>
+  </div>
+
+  <script src="options-script.js"></script>
+</body>
+</html>

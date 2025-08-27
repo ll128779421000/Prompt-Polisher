@@ -1,0 +1,9 @@
+{"level":"info","message":"Starting database migration...","service":"prompt-polisher-backend","timestamp":"2025-08-22T15:29:53.203Z"}
+{"level":"info","message":"Database migration completed successfully","service":"prompt-polisher-backend","timestamp":"2025-08-22T15:29:53.536Z"}
+{"level":"info","message":"🚀 Prompt Polisher Backend running on port 8080","service":"prompt-polisher-backend","timestamp":"2025-08-26T15:48:45.064Z"}
+{"level":"info","message":"Environment: development","service":"prompt-polisher-backend","timestamp":"2025-08-26T15:48:45.072Z"}
+{"level":"info","message":"Admin authentication initialized","service":"prompt-polisher-backend","timestamp":"2025-08-26T15:48:45.427Z"}
+{"level":"info","message":"✅ Database initialized successfully","service":"prompt-polisher-backend","timestamp":"2025-08-26T15:48:45.461Z"}
+{"ip":"::1","level":"info","message":"Incoming request","method":"GET","service":"prompt-polisher-backend","timestamp":"2025-08-26T15:49:21.463Z","url":"/health","userAgent":"curl/8.14.1"}
+{"duration":"7ms","ip":"::1","level":"info","message":"Request completed","method":"GET","service":"prompt-polisher-backend","statusCode":200,"timestamp":"2025-08-26T15:49:21.469Z","url":"/health"}
+{"level":"info","message":"SIGINT received, shutting down gracefully","service":"prompt-polisher-backend","timestamp":"2025-08-26T15:50:09.334Z"}

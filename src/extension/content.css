@@ -1,0 +1,180 @@
+/* Content script styles for Prompt Polisher */
+.prompt-polisher-improve-btn {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  text-decoration: none !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  touch-action: manipulation !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  box-sizing: border-box !important;
+}
+
+.prompt-polisher-improve-btn:focus {
+  outline: 2px solid #3730a3 !important;
+  outline-offset: 2px !important;
+}
+
+.prompt-polisher-improve-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+.prompt-polisher-modal-overlay {
+  backdrop-filter: blur(2px) !important;
+  animation: fadeIn 0.2s ease-out !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.prompt-polisher-modal {
+  animation: slideIn 0.3s ease-out !important;
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0; 
+    transform: scale(0.9) translateY(-20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1) translateY(0); 
+  }
+}
+
+.prompt-polisher-toast {
+  animation: slideInRight 0.3s ease-out !important;
+}
+
+@keyframes slideInRight {
+  from { 
+    opacity: 0; 
+    transform: translateX(100%); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
+
+/* Ensure our elements don't inherit unwanted styles */
+.prompt-polisher-improve-btn *,
+.prompt-polisher-modal *,
+.prompt-polisher-modal-overlay *,
+.prompt-polisher-toast * {
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* High specificity reset for modal */
+.prompt-polisher-modal {
+  all: initial !important;
+  position: fixed !important;
+  font-family: system-ui, -apple-system, sans-serif !important;
+  color: #000 !important;
+  background: white !important;
+  z-index: 100000 !important;
+}
+
+/* Responsive modal */
+@media (max-width: 768px) {
+  .prompt-polisher-modal {
+    width: 95% !important;
+    margin: 10px !important;
+  }
+  
+  .prompt-polisher-modal .prompt-comparison {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .prompt-polisher-modal .modal-footer {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  
+  .prompt-polisher-modal button {
+    width: 100% !important;
+  }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .prompt-polisher-modal {
+    background: #1f2937 !important;
+    color: #f9fafb !important;
+  }
+  
+  .prompt-polisher-modal .prompt-text {
+    background: #374151 !important;
+    color: #f9fafb !important;
+  }
+  
+  .prompt-polisher-modal h3,
+  .prompt-polisher-modal h4 {
+    color: #f9fafb !important;
+  }
+  
+  .prompt-polisher-modal .close-btn {
+    color: #f9fafb !important;
+  }
+  
+  .prompt-polisher-modal .btn-secondary {
+    background: #374151 !important;
+    color: #f9fafb !important;
+  }
+  
+  .prompt-polisher-modal .btn-secondary:hover {
+    background: #4b5563 !important;
+  }
+}
+
+/* Site-specific adjustments */
+/* ChatGPT */
+[data-domain="chat.openai.com"] .prompt-polisher-improve-btn {
+  font-family: "Söhne", system-ui, sans-serif !important;
+}
+
+/* Claude */
+[data-domain="claude.ai"] .prompt-polisher-improve-btn {
+  font-family: ui-sans-serif, system-ui, sans-serif !important;
+}
+
+/* Accessibility improvements */
+.prompt-polisher-improve-btn:focus-visible {
+  outline: 2px solid #3730a3 !important;
+  outline-offset: 2px !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prompt-polisher-modal-overlay,
+  .prompt-polisher-modal,
+  .prompt-polisher-toast {
+    animation: none !important;
+  }
+  
+  .prompt-polisher-improve-btn {
+    transition: none !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .prompt-polisher-improve-btn {
+    border: 2px solid #000 !important;
+  }
+  
+  .prompt-polisher-modal {
+    border: 3px solid #000 !important;
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "name": "prompt-polisher",
+  "version": "1.0.0",
+  "description": "Chrome MV3 extension and PWA for LLM prompt improvement with offline capabilities",
+  "main": "backend/dist/server.js",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:extension\" \"npm run dev:pwa\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:extension": "vite serve --mode extension",
+    "dev:pwa": "vite serve --mode pwa",
+    "build": "npm run build:backend && npm run build:extension && npm run build:pwa",
+    "build:backend": "cd backend && npm run build",
+    "build:extension": "vite build --mode extension",
+    "build:pwa": "vite build --mode pwa",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src --ext .ts,.tsx",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "vite": "^5.0.0",
+    "typescript": "^5.2.2"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.254",
+    "@types/node": "^20.9.0",
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "@typescript-eslint/parser": "^6.10.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.53.0",
+    "vite-plugin-pwa": "^0.17.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}
