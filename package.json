@@ -4,7 +4,7 @@
   "description": "Chrome MV3 extension and PWA for LLM prompt improvement with offline capabilities",
   "main": "backend/dist/server.js",
   "scripts": {
-    "start": "cd backend && npm start",
+    "start": "mkdir -p backend/data && cd backend && npm start",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:extension\" \"npm run dev:pwa\"",
     "dev:backend": "cd backend && npm run dev",
     "dev:extension": "vite serve --mode extension",
